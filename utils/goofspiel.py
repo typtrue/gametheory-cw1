@@ -22,7 +22,7 @@ class Game(object):
         if not self.common:
             self.gamewon = True
             return int(self.players[1].score > self.players[0].score)
-        self.facecard = choice(self.common)
+        self.face_up = choice(self.common)
         return False
 
 class Player(object):
