@@ -3,34 +3,42 @@ from random import choice
 
 
 class Game(object):
-    def __init__(self, N, p1_cards, p2_cards):
-        if len(p1_cards) != N or len(p2_cards) != N:
+    def __init__(self, N, cards):
+        if len(cards[0]) != N or len(cards[1]) != N:
             raise ValueError(f"size of both players' decks must be {N}")
         self.N = N
         self.common = list(range(1, N+1))
-        self.p1_cards = p1_cards
-        self.p2_cards = p2_cards
-        self.p1_score = 0
-        self.p2_score = 0
-        self.facecard = choice(self.common)
+        self.players = [Player(self, c, i) for i, c in enumerate(cards)]
+        self.face_up = choice(self.common)
         self.gamewon = False
 
-    def play(self, p1, p2):
-        if p1 >= p2:
-            self.p1_score += self.facecard
-        if p2 >= p1:
-            self.p2_score += self.facecard
-        self.p1_cards.remove(p1)
-        self.p2_cards.remove(p2)
-        self.common.remove(self.facecard)
+    def play(self):
+        moves = [p.move() for p in self.players]
+        for i, p in enumerate(self.players):
+            if moves[i] == max(moves):
+                p.score += self.face_up
+            p.cards.remove(self.face_up)
+        self.common.remove(self.face_up)
         if not self.common:
             self.gamewon = True
-            return True
+            return int(self.players[1].score > self.players[0].score)
         self.facecard = choice(self.common)
         return False
 
+class Player(object):
+    def __init__(self, gamestate, cards, player_no):
+        self.gamestate = gamestate
+        self.id = player_no
+        self.cards = cards
+        self.score = 0
 
-g = Game(2, [1,2], [1,2])
-g.play(1, 2)
-print(g.p1_score, g.p2_score)
-print(g.p1_cards, g.p2_cards, g.common)
+    def move(self):
+        other = self.gamestate.players[1-self.id]
+        common = self.gamestate.common
+        face_up = self.gamestate.face_up
+
+        return choice(self.cards)
+
+g = Game(5, ([1, 2, 3, 4, 5], [1, 2, 3, 4, 5]))
+while g.play() == False:
+    print(g.players[0].score, g.players[1].score)
