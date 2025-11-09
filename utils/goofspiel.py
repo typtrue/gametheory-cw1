@@ -1,5 +1,6 @@
 import numpy as np
 from random import choice
+from funcs import playerChoice
 
 
 class Game(object):
@@ -37,7 +38,9 @@ class Player(object):
         common = self.gamestate.common
         face_up = self.gamestate.face_up
 
-        return choice(self.cards)
+        card_to_play = playerChoice(self, other, common, face_up)
+
+        return card_to_play
 
 g = Game(5, ([1, 2, 3, 4, 5], [1, 2, 3, 4, 5]))
 while g.play() == False:
