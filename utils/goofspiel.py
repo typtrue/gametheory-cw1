@@ -4,11 +4,14 @@ from funcs import playerChoice
 
 
 class Game(object):
-    def __init__(self, N, cards):
-        if len(cards[0]) != N or len(cards[1]) != N:
-            raise ValueError(f"size of both players' decks must be {N}")
-        self.N = N
-        self.common = list(range(1, N+1))
+    def __init__(self, cards, *, common):
+        if len(cards[0]) != len(cards[1]):
+            raise ValueError(f"size of both players' decks must be equal")
+        self.N = len(cards[0])
+        if common is None:
+            self.common = list(range(1, self.N+1))
+        else:
+            self.common = common
         self.players = [Player(self, c, i) for i, c in enumerate(cards)]
         self.face_up = choice(self.common)
         self.gamewon = False
@@ -25,6 +28,10 @@ class Game(object):
             return int(self.players[1].score > self.players[0].score)
         self.face_up = choice(self.common)
         return False
+    
+    def play_force(self, played_cards, facecard):
+        for i, card in enumerate(played_cards):
+            
 
 class Player(object):
     def __init__(self, gamestate, cards, player_no):
