@@ -22,7 +22,6 @@ class Game(object):
         return Game(V, Y, P)
 
     def value(self):
-        print(f"{self.V} {self.Y} {self.P}")
         if len(self.V) == 1:
             val = self.P[0] * np.sign(self.V[0] - self.Y[0])
             VALUES[f"{self.V} {self.Y} {self.P}"] = val
@@ -35,7 +34,9 @@ class Game(object):
                 for j, Y_j in enumerate(self.Y):
                     score = P_k * np.sign(V_i - Y_j)
                     gs = self.createSubgame(V_i, Y_j, P_k)
-                    if VALUES[f"{gs.V}{gs.Y}{gs.P}"] is not None:
+                    if gs.V == gs.Y:
+                        X[i, j] = score
+                    elif VALUES[f"{gs.V}{gs.Y}{gs.P}"] is not None:
                         X[i, j] = score + VALUES[f"{gs.V}{gs.Y}{gs.P}"]
                     elif VALUES[f"{gs.V}{gs.Y}{gs.P}"] is not None:
                         X[i, j] = score - VALUES[f"{gs.V}{gs.Y}{gs.P}"]
@@ -64,16 +65,18 @@ def game_val_from_mat(A):
     c = np.zeros(m + 1)
     c[-1] = -1
 
-    print(A)
-
     bounds = [(0, None) for i in range(m)]
     bounds.append((None, None))
     b_tup = tuple(bounds)
 
     res = sci_op.linprog(c, ineq, b_ineq, eq, b_eq, b_tup)
 
-    print(res)
     return res.x[:-1], res.x[-1]
 
-g = Game([1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5])
+V = [1, 2, 3, 4, 5]
+Y = [1, 2, 3, 4, 5]
+P = [1, 2, 3, 4, 5]
+
+g = Game(V, Y, P)
 print(g.value())
+print(MIXEDSTRAT[f"{len(P)}{2}"])
