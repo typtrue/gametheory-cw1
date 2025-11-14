@@ -69,14 +69,17 @@ class Game(object):
             Holds optimal mixed strategies for a given subgame and upcard.
             Access using `MIXEDSTRAT[f"{len(P)}{P_k}"]`.
         """
+        # check for terminating condition
         if len(self.V) == 1:
             val = self.P[0] * np.sign(self.V[0] - self.Y[0])
             VALUES[f"{self.V} {self.Y} {self.P}"] = val
             return val
         total = 0
+        # average all possible cards that could be drawn
         for P_k in self.P:
-            MIXEDSTRAT[f"{len(self.P)}{P_k}"] = None
+            MIXEDSTRAT[f"{self.V}{self.P}{P_k}"] = None
             X = np.zeros((len(self.V), len(self.Y)))
+            # cosntruct payoff matrix using values of subgames (previously stored)
             for i, V_i in enumerate(self.V):
                 for j, Y_j in enumerate(self.Y):
                     score = P_k * np.sign(V_i - Y_j)
@@ -92,7 +95,7 @@ class Game(object):
                         VALUES[f"{gs.V}{gs.Y}{gs.P}"] = val
                         X[i, j] = score + val
             x, value = game_val_from_mat(X)
-            MIXEDSTRAT[f"{len(self.P)}{P_k}"] = x[::-1]
+            MIXEDSTRAT[f"{self.V}{self.P}{P_k}"] = x[::-1]
             total += value
         return total / len(self.P)
 
@@ -113,6 +116,8 @@ def game_val_from_mat(A):
     v : float
         Value of game.
     """
+
+    # init optimisation problem
     m = A.shape[0]
     ineq = np.zeros((m, m + 1))
     k = np.ones(m)
@@ -131,6 +136,7 @@ def game_val_from_mat(A):
     bounds.append((None, None))
     b_tup = tuple(bounds)
 
+    # get result of optimisation problem
     res = sci_op.linprog(c, ineq, b_ineq, eq, b_eq, b_tup)
 
     return res.x[:-1], res.x[-1]
@@ -141,4 +147,4 @@ P = [1, 2, 3, 4]
 
 g = Game(V, Y, P)
 print(g.value())
-print(MIXEDSTRAT[f"{len(P)}{2}"])
+print(MIXEDSTRAT[f"{V}{P}{2}"])
