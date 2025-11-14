@@ -1,1 +1,1 @@
-from .goofspiel import *
+from .funcs import Game, game_val_from_mat

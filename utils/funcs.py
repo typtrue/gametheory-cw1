@@ -6,13 +6,46 @@ VALUES = dict()
 MIXEDSTRAT = dict()
 
 class Game(object):
+    """
+    Handles processing of instances of Goofspiel in order to calculate
+    their value as well as optimal mixed strategies.
+    """
     def __init__(self, V, Y, P):
+        """
+        Initialise game based on three sets of input cards.
+        
+        Parameters
+        ----------
+        V : list of int
+            List of Player 1's cards.
+        Y : list of int
+            List of Player 2's cards.
+        P : list of int
+            List of central cards.
+        """
         self.V = V
         self.Y = Y
         self.P = P
         VALUES[f"{V}{Y}{P}"] = None
     
     def createSubgame(self, V_i, Y_j, P_k):
+        """
+        Create a subgame based on removing certain cards from each player.
+        
+        Parameters
+        ----------
+        V_i : int
+            Card to be removed from Player 1's cards.
+        Y_j : int
+            Card to be removed from Player 2's cards.
+        P_k : int
+            Face-up central card to be removed.
+        
+        Returns
+        -------
+        G : Game
+            Subgame created from removing specified cards.
+        """
         V = self.V.copy()
         Y = self.Y.copy()
         P = self.P.copy()
@@ -22,6 +55,20 @@ class Game(object):
         return Game(V, Y, P)
 
     def value(self):
+        """
+        Calculate the value of game.
+
+        Returns
+        -------
+        value : float
+            Value of game.
+        
+        Yields
+        ------
+        MIXEDSTRAT : dict
+            Holds optimal mixed strategies for a given subgame and upcard.
+            Access using `MIXEDSTRAT[f"{len(P)}{P_k}"]`.
+        """
         if len(self.V) == 1:
             val = self.P[0] * np.sign(self.V[0] - self.Y[0])
             VALUES[f"{self.V} {self.Y} {self.P}"] = val
@@ -45,12 +92,27 @@ class Game(object):
                         VALUES[f"{gs.V}{gs.Y}{gs.P}"] = val
                         X[i, j] = score + val
             x, value = game_val_from_mat(X)
-            MIXEDSTRAT[f"{len(self.P)}{P_k}"] = x
+            MIXEDSTRAT[f"{len(self.P)}{P_k}"] = x[::-1]
             total += value
         return total / len(self.P)
 
 
 def game_val_from_mat(A):
+    """
+    Get a value of a game from a given payoff matrix `A`.
+
+    Parameters
+    ----------
+    A : array_like
+        Payoff matrix of game to calculate value of.
+
+    Returns
+    -------
+    x : array_like
+        Mixed strategy vector that produces highest payoff.
+    v : float
+        Value of game.
+    """
     m = A.shape[0]
     ineq = np.zeros((m, m + 1))
     k = np.ones(m)
@@ -73,9 +135,9 @@ def game_val_from_mat(A):
 
     return res.x[:-1], res.x[-1]
 
-V = [1, 2, 3, 4, 5]
-Y = [1, 2, 3, 4, 5]
-P = [1, 2, 3, 4, 5]
+V = [1, 2, 3, 4]
+Y = [1, 2, 3, 4]
+P = [1, 2, 3, 4]
 
 g = Game(V, Y, P)
 print(g.value())
