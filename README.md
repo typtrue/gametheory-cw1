@@ -1,6 +1,6 @@
 # MATH60141 Coursework
 
-This repository contains all code used in our research project for MATH60141 - Introduction to Game Theory, where we cover (FILL IN).
+This repository contains all code used in our research project for MATH60141 - Introduction to Game Theory, where we look at Goofspiel (Game of Pure Strategy).
 
 ## Authors:
 - Tim Zhuang
