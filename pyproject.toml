@@ -7,5 +7,9 @@ name = "gametheory-cw1"
 version = "0.1.0"
 
 dependencies = [
-    "numpy"
+    "numpy",
+    "scipy"
 ]
+
+[tool.hatch.build.targets.wheel]
+packages = ["utils"]

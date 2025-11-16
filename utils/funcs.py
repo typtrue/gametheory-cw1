@@ -95,7 +95,7 @@ class Game(object):
                         VALUES[f"{gs.V}{gs.Y}{gs.P}"] = val
                         X[i, j] = score + val
             x, value = game_val_from_mat(X)
-            MIXEDSTRAT[f"{self.V}{self.P}{P_k}"] = x[::-1]
+            MIXEDSTRAT[f"{self.V}{self.P}{P_k}"] = x
             total += value
         return total / len(self.P)
 
@@ -139,12 +139,4 @@ def game_val_from_mat(A):
     # get result of optimisation problem
     res = sci_op.linprog(c, ineq, b_ineq, eq, b_eq, b_tup)
 
-    return res.x[:-1], res.x[-1]
-
-V = [1, 2, 3, 4]
-Y = [1, 2, 3, 4]
-P = [1, 2, 3, 4]
-
-g = Game(V, Y, P)
-print(g.value())
-print(MIXEDSTRAT[f"{V}{P}{2}"])
+    return res.x[-1::-1], res.x[-1]
