@@ -1,6 +1,4 @@
 import numpy as np
-from random import choice
-import scipy.optimize as sci_op
 import glpk
 
 class Game(object):
