@@ -11,8 +11,4 @@ All code is our own work.
 
 ## Usage
 
-WIP
-
-## Acknowledgements
-
-WIP
+The `utils` folder is provided as an installable Python package. To install, download the repository root folder, navigate to it in your terminal, and run `python -m pip install -e .` Importing `utils` will provide access to the `Game` class which handles the game logic for Goofspiel, as well as the `game_val_from_mat()` function, which calculates the optimal mixed strategy vector and value of a game using a given payoff matrix.
