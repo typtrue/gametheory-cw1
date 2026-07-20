@@ -15,4 +15,4 @@ The `utils` folder is provided as an installable Python package. To install, dow
 
 ## Project Report
 
-The writup for this project can be found in the repository, or using [this link](https://github.com/typtrue/gametheory-cw1/blob/main/gt_cw1.pdf).
+The writeup for this project can be found in the repository, or using [this link](https://github.com/typtrue/gametheory-cw1/blob/main/gt_cw1.pdf).
